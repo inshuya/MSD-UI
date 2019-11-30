@@ -1,0 +1,100 @@
+﻿DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="header.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <title>musiXperience</title>
+
+    <!-- Script for displaying the top songs based on User's Favorite Genre -->
+    <script>
+
+        // User enters a keyword for the song and submits the data.
+        $(function ()
+        {
+            $("#button").click(function ()
+            {
+                $(this).prop("value","Please wait..");
+                $(this).prop("disabled",true);
+
+                var temp = "http://localhost:8397/musixperience/search/" + document.getElementById("Search").value;
+                //var temp="search.json"
+                // Creating the variable and entering the URL for the JSON
+                var url = temp;
+                // Fetching the JSON file
+                $.getJSON(url, function (data)
+                {
+
+                    var tbl_body = "";
+                    tbl_body +="<tr><th>Track Title</th><th>Album Name</th><th>Artist Name</th><th>Year</th><th>Genre</th><th>City</th><th>State</th><th>Location</th></tr>"
+                    $.each(data, function() {
+                        var tbl_row = "";
+                        $.each(this, function(k , v) {
+                            tbl_row += "<td>"+v+"</td>";
+                        })
+                        tbl_body += "<tr>"+tbl_row+"</tr>";
+                    })
+                    $("#genre_table tbody").html(tbl_body);
+
+                    $("#button").prop("disabled",false);
+                    $("#button").prop("value","Submit");
+                });
+            });
+
+        });
+    </script>
+
+</head>
+
+<body>
+
+
+    <!--The Div Container for the Menubar on the top -->
+    <div class="navbar">
+        <a class="navbar-brand" style="padding: 0px 0px;">
+            <div class="logo-image" >
+                <img src="images/logo.png" style="max-height: 100%; max-width: 100%">
+            </div>
+        </a>
+        <a href="Index.html">Home</a>
+        <a href="Events.html">Events</a>>
+        <a href="Artists.html">Artists</a>
+        <a href="Search.html">Search</a>
+        <a class="active" href="SaveTrack.html">Save Track</a>
+    </div>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <!--Form Tag for the user to enter the User ID for populating their favorite Genre -->
+    <div id="centerdiv">
+    <form>
+        <table>
+            <tr>
+                <td>
+                    Search:
+                </td>
+                <TD>
+                    <INPUT TYPE="TEXT" ID="Search" SIZE="20">
+                </TD>
+            </tr>
+        </table>
+    </form>
+    <input id="button" type="submit"  class="bt"><br />
+    <br />
+
+    <p>
+        Songs based on your search:
+        <br>
+        <table id="genre_table" class="result_table">
+            <tbody></tbody>
+        </table>
+    </p>
+    </div>
+</body>
+</html>

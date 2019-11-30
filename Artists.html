@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="header.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <title>musiXperience</title>
+
+    <!-- Script for displaying the State/City textbox based on the radio button selection-->
+    <script>
+        $(document).ready(function ()
+        {
+            // The Textbox is hidden.
+            $(".textState").hide();
+
+            // Based on the User selection, the textbox is displayed.
+            $("#State").click(function ()
+            {
+                $(".textState").show();
+            });
+
+            $("#City").click(function ()
+            {
+                $(".textState").show();
+            });
+        });
+    </script>
+
+
+    <script>
+
+        $(function ()
+        {
+
+            // User enters the State/City details and submits the data
+            $("#ShowData").click(function ()
+            {
+                $(this).prop("value","Please wait..");
+                $(this).prop("disabled",true);
+
+                var ele = document.getElementsByName('select');
+                var selection;
+
+                // For loop for fetching the value of the Radio button selected.
+                for (i = 0; i < ele.length; i++)
+                {
+
+                    if (ele[i].checked)
+                    {
+
+                        selection = ele[i].value;
+                    }
+                }
+
+                // If the user selects City, following URL is accessed.
+                if (selection == "City")
+                {
+                    var temp = "http://localhost:8397/musixperience/artist/city/" + document.getElementById("Data").value;
+                    //var temp="search.json"
+                }
+
+                // Else the below mentioned URL is accessed.
+                else
+                {
+                    var temp = "http://localhost:8397/musixperience/artist/state/" + document.getElementById("Data").value;
+                    //var temp="search.json"
+                }
+
+
+                // Creating the variable and entering the URL for the JSON
+                var url = temp;
+
+                 // Fetching the JSON file
+                $.getJSON(url, function (data)
+                {
+
+                    var tbl_body = "";
+                    tbl_body +="<tr><th>Track Title</th><th>Album Name</th><th>Artist Name</th><th>Year</th><th>Genre</th><th>City</th><th>State</th><th>Location</th></tr>"
+                    $.each(data, function() {
+                        var tbl_row = "";
+                        $.each(this, function(k , v) {
+                            tbl_row += "<td>"+v+"</td>";
+                        })
+                        tbl_body += "<tr>"+tbl_row+"</tr>";
+                    })
+                    $("#genre_table tbody").html(tbl_body);
+                    $("#ShowData").prop("disabled",false);
+                    $("#ShowData").prop("value","Submit");
+                });
+
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+
+
+    <!--The Div Container for the Menubar on the top -->
+    <div class="navbar">
+        <a class="navbar-brand" style="padding: 0px 0px;">
+            <div class="logo-image" >
+                <img src="images/logo.png" style="max-height: 100%; max-width: 100%">
+            </div>
+        </a>
+        <a href="Index.html">Home</a>
+        <a href="Events.html">Events</a>>
+        <a class="active" href="Artists.html">Artists</a>
+        <a href="Search.html">Search</a>
+        <a href="SaveTrack.html">Save Track</a>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <!--Form Tag for the user to enter the User ID for populating their favorite Genre -->
+    <div id="centerdiv">
+    <form>
+
+        <br />
+        <br />
+
+        <div id='buttons'>
+            <label>Select:</label>
+            <label><input type="radio" name="select" id="State" value="State" /> State </label>
+            <label><input type="radio" name="select" id="City" value="City" /> City </label>
+        </div>
+
+        <div class="textState">
+            <p>
+                Enter State/City:
+                <INPUT TYPE="TEXT" ID="Data" SIZE="20" required />
+            </p>
+        </div>
+    </form>
+    <br />
+
+        <input id="ShowData" type="submit" class="bt"><br />
+        <p>
+            Artist's songs based on your search:<br>
+        <table id="genre_table" class="result_table">
+            <tbody></tbody>
+        </table>
+        </p>
+    </div>
+</body>
+</html>
